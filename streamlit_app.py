@@ -3,11 +3,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
-st.title("Data App Assignment, on Oct 7th")
+st.title("Paul's Data App")
 
-st.write("### Input Data and Examples")
+st.write("### The dataset used in the graphs below")
 df = pd.read_csv("Superstore_Sales_utf8.csv", parse_dates=True)
 st.dataframe(df)
+
+option = st.selectbox(
+    "The categories of the dataset ",
+    ("Furniture", "Office Supplies", "Technology"),
+    index=None,
+    placeholder="Select a category",
+)
+st.write("You selected:", option)
 
 # This bar chart will not have solid bars--but lines--because the detail data is being graphed independently
 st.bar_chart(df, x="Category", y="Sales")
