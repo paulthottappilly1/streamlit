@@ -51,13 +51,13 @@ st.line_chart(sub_categories_sales_by_month, y="Sales")
 
 total_sales = filtered_data['Sales'].sum()
 total_profit = filtered_data['Profit'].sum()
-profit_margin = ((total_profit / total_sales) * 100) if total_sales > 0 else 0
+overall_profit_margin = ((total_profit / total_sales) * 100) if total_sales > 0 else 0
 
 overall_sales = df['Sales'].sum()
 overall_profit = df['Profit'].sum()
-overall_profit_margin = (overall_profit / overall_sales * 100) if overall_sales > 0 else 0
-profit_margin_delta = profit_margin - overall_profit_margin
+overall_average_profit_margin = ((overall_profit / overall_sales) * 100) if overall_sales > 0 else 0
+profit_margin_delta = overall_profit_margin - overall_average_profit_margin
 
 st.metric(label="Total Sales", value=round(total_sales, 2))
 st.metric(label="Total Profit", value=round(total_profit, 2))
-st.metric(label="Profit Margin", value=f"{round(profit_margin, 2)}%", delta=f"{round(profit_margin_delta)}%")
+st.metric(label="Overall Profit Margin", value=f"{round(profit_margin, 2)}%", delta=f"{round(profit_margin_delta)}%")
