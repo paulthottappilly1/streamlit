@@ -60,4 +60,4 @@ profit_margin_delta = overall_profit_margin - overall_average_profit_margin
 
 st.metric(label="Total Sales", value=round(total_sales, 2))
 st.metric(label="Total Profit", value=round(total_profit, 2))
-st.metric(label="Overall Profit Margin", value=f"{round(profit_margin, 2)}%", delta=f"{round(profit_margin_delta)}%")
+st.metric(label="Overall Profit Margin", value=f"{round(overall_profit_margin, 2)}%", delta=f"{round(profit_margin_delta)}%")
