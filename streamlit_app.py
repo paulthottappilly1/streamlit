@@ -29,30 +29,35 @@ st.dataframe(sales_by_month)
 # Here the grouped months are the index and automatically used for the x axis
 st.line_chart(sales_by_month, y="Sales")
 
-st.write("## Your additions")
-st.write("### (1) add a drop down for Category (https://docs.streamlit.io/library/api-reference/widgets/st.selectbox)")
-option = st.selectbox(
-    "The categories of the dataset ",
-    ("Furniture", "Office Supplies", "Technology"),
-    index=None,
-    placeholder="Select a category",
-)
-st.write("You selected:", option)
-
-st.write("### (2) add a multi-select for Sub_Category *in the selected Category (1)* (https://docs.streamlit.io/library/api-reference/widgets/st.multiselect)")
+st.write("## My additions")
 sub_categories_dict = {
     "Furniture": ["Bookcases", "Chairs", "Furnishings", "Tables"], 
     "Office Supplies": ["Appliances", "Art", "Binders", "Envelopes", "Fasteners", "Labels", "Paper", "Storage", "Supplies"], 
     "Technology": ["Accessories", "Copiers", "Machines", "Phones"]
 }
 categories = list(sub_categories_dict.keys())
-selected_category = st.selectbox('Pick a category to view its corresponding sub_categories ', categories)
-if selected_category:
-    sub_categories = sub_categories_dict[selected_category]
-    selected_sub_categories = st.multiselect('Select the sub_categories', sub_categories)
+selected_category = st.selectbox('Pick a category to view its corresponding subcategories in a graph', categories,
+                                index=None,placeholder="Select a category")
+st.write("You selected:", selected_category)
+sub_categories = sub_categories_dict[selected_category]
+selected_sub_categories = st.multiselect('Select the subcategories', sub_categories, 
+                                placeholder="Select subcategories")
 
-    st.write(f'You selected subcategories: {selected_sub_categories}')
+st.write(f'You selected subcategories: {selected_sub_categories}')
 
-st.write("### (3) show a line chart of sales for the selected items in (2)")
-st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
-st.write("### (5) use the delta option in the overall profit margin metric to show the difference between the overall average profit margin (all products across all categories)")
+filtered_data = df[df['Sub_Category'].isin(selected_sub_categories)]
+sub_categories_sales_by_month = filtered_data.filter(items=["Sales"]).groupby(pd.Grouper(freq='ME')).sum()
+st.line_chart(sub_categories_sales_by_month, y="Sales")
+
+total_sales = filtered_data['Sales'].sum()
+total_profit = filtered_data['Profit'].sum()
+profit_margin = ((total_profit / total_sales) * 100) if total_sales > 0 else 0
+
+overall_sales = df['Sales'].sum()
+overall_profit = df['Profit'].sum()
+overall_profit_margin = (overall_profit / overall_sales * 100) if overall_sales > 0 else 0
+profit_margin_delta = profit_margin - overall_profit_margin
+
+st.metric(label="Total Sales", value=round(total_sales, 2))
+st.metric(label="Total Profit", value=round(total_profit, 2))
+st.metric(label="Profit Margin", value=f"{round(profit_margin, 2)}%", delta=f"{round(profit_margin_delta)}%")
